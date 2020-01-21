@@ -90,7 +90,7 @@ pause;
 %  In this exercise, you will use a built-in function (fminunc) to find the
 %  optimal parameters theta.
 
-%  Set options for fminunc
+%  Set options yfor fminunc
 options = optimset('GradObj', 'on', 'MaxIter', 400);
 
 %  Run fminunc to obtain the optimal theta
