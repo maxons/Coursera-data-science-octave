@@ -63,24 +63,89 @@ Theta2_grad = zeros(size(Theta2));
 %
 
 
+Y = zeros(m, num_labels);
 
+for ii=1:m
+    %if (y(m) == 0)
+    %    val = num_vals;
+    %else
+    %    val = y(m);
+    %endif
+    Y(ii, y(ii)) = 1;
+endfor
 
+a1 = [ones(size(X, 1), 1) X];
+z2 = Theta1 * a1';
+temp = sigmoid(z2);
+a2 = [ones(1, size(temp, 2)); temp];
+z3 = Theta2 * a2;
+a3 = sigmoid(z3)';
 
+for ii=1:m
+    for kk=1:num_labels
+        term_1 = -Y(ii,kk)*log(a3(ii,kk));
+        term_2 = (1-Y(ii,kk))*log(1-a3(ii,kk));
+        J = J + (term_1-term_2);
+    endfor
+endfor
 
+J = J/m;
 
+J_reg = 0;
+% Regularization term
+for jj=1:hidden_layer_size
+    for kk=1:input_layer_size
+        J_reg = J_reg + (Theta1(jj,kk+1))^2;
+    endfor
+endfor
 
+% kk+1 not to take in account the bias term
+% Said differently, removes the first column
+for jj=1:num_labels
+    for kk=1:hidden_layer_size
+        J_reg = J_reg + (Theta2(jj,kk+1))^2;
+    endfor
+endfor
 
-
-
-
-
-
-
+J = J + J_reg*lambda/(2*m);
 
 
 
 
 % -------------------------------------------------------------
+% Part 2
+
+
+
+for tt=1:m
+    % 1
+    y_vec = zeros(num_labels,1);
+    y_vec(y(tt)) = 1;    
+    
+    
+    a1 = [1 X(tt,:)]';
+    z2 = Theta1 * a1;
+    a2 = [1; sigmoid(z2)];
+    z3 = Theta2 * a2;
+    a3 = sigmoid(z3);
+    % 2
+    d3 = a3-y_vec;
+    % 3
+    d2 = (Theta2(:,2:end)' * d3) .* sigmoidGradient(z2);
+    % d2 = d3 * Theta2 .* a2 .* (1 - a2);
+    % 4
+    %d2 = d2(:,2:end);
+    
+    Theta1_grad = Theta1_grad + d2*a1';
+    Theta2_grad = Theta2_grad + d3*a2';
+    
+
+endfor
+
+% 5
+Theta1_grad = Theta1_grad/m + lambda*[zeros(size(Theta1,1),1) Theta1(:,2:end)]/m;
+Theta2_grad = Theta2_grad/m + lambda*[zeros(size(Theta2,1),1) Theta2(:,2:end)]/m;
+
 
 % =========================================================================
 
