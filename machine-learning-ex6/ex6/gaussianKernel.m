@@ -16,8 +16,9 @@ sim = 0;
 %
 %
 
-
-
+D = x1-x2;
+N = D'*D;
+sim = exp(-N/(2*sigma^2));
 
 
 
