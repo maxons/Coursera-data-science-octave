@@ -21,7 +21,22 @@ idx = zeros(size(X,1), 1);
 % Note: You can use a for-loop over the examples to compute this.
 %
 
+n = size(X,1);
 
+for ii = 1:n
+    c_idx = -1;
+    c_norm = 1000000;
+    
+    for kk = 1:K
+        temp = norm(X(ii,:) - centroids(kk,:));
+        if (c_norm > temp)
+            c_idx = kk;
+            c_norm = temp;
+        endif
+    endfor
+    
+    idx(ii) = c_idx;
+endfor
 
 
 
