@@ -42,9 +42,24 @@ Theta_grad = zeros(size(Theta));
 
 
 
+M = Theta*X';
+H = ((M'-Y).*R);
+J = sum(sum( H.^2 )) /2;
 
 
+for ii = 1:num_movies
+    idx = find(R(ii, :) == 1);
+    theta_temp = Theta(idx, :);
+    y_temp = Y(ii,idx);
+    X_grad(ii, :) = (X(ii,:)*theta_temp' - y_temp)*theta_temp;
+endfor
 
+for ii = 1:num_users
+    idx = find(R(:, ii) == 1);
+    x_temp = X(idx, :);
+    y_temp = Y(idx,ii);
+    Theta_grad(ii, :) = (x_temp*Theta(ii,:)' - y_temp)'*x_temp;
+endfor
 
 
 
